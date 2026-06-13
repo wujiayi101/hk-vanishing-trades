@@ -1,0 +1,24 @@
+{
+  "name": "hk-vanishing-trades",
+  "version": "0.1.0",
+  "description": "Data story: which industries are disappearing in Hong Kong, from C&SD open data",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "gen:fixture": "node scripts/gen-fixture.mjs",
+    "fetch": "node scripts/fetch.mjs",
+    "fetch:fixture": "node scripts/fetch.mjs --fixture",
+    "build:data": "node scripts/build.mjs",
+    "test:cagr": "node --test scripts/lib/cagr.test.mjs",
+    "data": "npm run fetch:fixture && npm run build:data",
+    "web:dev": "npm --prefix web run dev",
+    "web:build": "npm --prefix web run build",
+    "build": "npm --prefix web ci && npm run build:data && npm --prefix web run build"
+  },
+  "dependencies": {
+    "csv-parse": "^5.5.6"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

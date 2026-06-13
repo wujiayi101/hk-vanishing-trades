@@ -1,0 +1,41 @@
+name: Update data
+
+# Refreshes the dataset monthly (C&SD updates slowly). Commits only when the
+# data actually changes. Cloudflare Pages auto-deploys on the resulting push.
+on:
+  schedule:
+    - cron: '0 0 1 * *' # 00:00 UTC on the 1st of each month
+  workflow_dispatch: {}
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pipeline deps
+        run: npm ci
+
+      - name: Fetch + build data
+        # Switch to `npm run fetch` once SOURCES[].url is configured in scripts/config.mjs.
+        run: |
+          npm run fetch:fixture
+          npm run build:data
+
+      - name: Commit if data changed
+        run: |
+          git config user.name "Wu Jiayi"
+          git config user.email "wujiayi.chris@gmail.com"
+          if git diff --quiet -- data/industry_trends.json web/public/industry_trends.json; then
+            echo "No data changes."
+          else
+            git add data/industry_trends.json web/public/industry_trends.json data/raw
+            git commit -m "chore(data): monthly refresh"
+            git push
+          fi
