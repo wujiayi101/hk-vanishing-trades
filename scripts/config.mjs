@@ -12,7 +12,9 @@ export const SOURCES = [
     // (other than the Civil Service) by industry division & District Council.
     // JSON API, full back-cast series 2000-present. We use HK-wide totals (DC='').
     url: 'https://www.censtatd.gov.hk/api/get.php?id=215-16008&lang=en&full_series=1',
+    urlZh: 'https://www.censtatd.gov.hk/api/get.php?id=215-16008&lang=sc&full_series=1',
     label: 'C&SD Table 215-16008: Establishments & persons engaged by industry',
+    labelZh: '统计处表 215-16008：按行业划分的机构单位数目及就业人数',
     format: 'censtatd-json',
   },
 ];

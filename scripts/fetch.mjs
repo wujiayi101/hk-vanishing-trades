@@ -28,27 +28,35 @@ async function downloadOne(src) {
   }
 
   const isJson = src.format === 'censtatd-json';
-  const dest = join(PATHS.rawDir, `${src.id}-${stamp}.${isJson ? 'json' : 'csv'}`);
-  const res = await fetch(src.url);
-  if (!res.ok) throw new Error(`Fetch failed ${res.status} ${res.statusText} for ${src.url}`);
-  const text = await res.text();
 
-  if (isJson) {
-    let parsed;
-    try {
-      parsed = JSON.parse(text);
-    } catch {
-      throw new Error(`Downloaded content for ${src.id} is not valid JSON`);
+  async function grab(url, suffix) {
+    const dest = join(PATHS.rawDir, `${src.id}-${stamp}${suffix}`);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Fetch failed ${res.status} ${res.statusText} for ${url}`);
+    const text = await res.text();
+    if (isJson) {
+      let parsed;
+      try {
+        parsed = JSON.parse(text);
+      } catch {
+        throw new Error(`Downloaded content for ${src.id} is not valid JSON`);
+      }
+      if (!Array.isArray(parsed.dataSet) || parsed.dataSet.length === 0) {
+        throw new Error(`C&SD response for ${src.id} has no dataSet records`);
+      }
+    } else if (!text.trim() || !text.includes(',')) {
+      throw new Error(`Downloaded content for ${src.id} does not look like CSV`);
     }
-    if (!Array.isArray(parsed.dataSet) || parsed.dataSet.length === 0) {
-      throw new Error(`C&SD response for ${src.id} has no dataSet records`);
-    }
-  } else if (!text.trim() || !text.includes(',')) {
-    throw new Error(`Downloaded content for ${src.id} does not look like CSV`);
+    writeFileSync(dest, text, 'utf8');
+    console.log(`[download] ${url} -> ${dest} (${text.length} bytes)`);
   }
 
-  writeFileSync(dest, text, 'utf8');
-  console.log(`[download] ${src.url} -> ${dest} (${text.length} bytes)`);
+  if (isJson) {
+    await grab(src.url, '.en.json');
+    if (src.urlZh) await grab(src.urlZh, '.zh.json');
+  } else {
+    await grab(src.url, '.csv');
+  }
 }
 
 for (const src of SOURCES) {

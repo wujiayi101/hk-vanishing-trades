@@ -1,6 +1,7 @@
 {
   "generatedAt": "2026-06-13",
   "source": "C&SD Table 215-16008: Establishments & persons engaged by industry",
+  "sourceZh": "统计处表 215-16008：按行业划分的机构单位数目及就业人数",
   "yearRange": [
     2000,
     2025
@@ -15,6 +16,7 @@
     {
       "code": "ind_10",
       "name": "Manufacture of food products",
+      "nameZh": "食品的制造",
       "personsSeries": [
         {
           "year": 2000,
@@ -234,6 +236,7 @@
     {
       "code": "ind_11",
       "name": "Manufacture of beverages",
+      "nameZh": "饮品的制造",
       "personsSeries": [
         {
           "year": 2000,
@@ -453,6 +456,7 @@
     {
       "code": "ind_13",
       "name": "Manufacture of textiles",
+      "nameZh": "纺织品的制造",
       "personsSeries": [
         {
           "year": 2000,
@@ -672,6 +676,7 @@
     {
       "code": "ind_14",
       "name": "Manufacture of wearing apparel",
+      "nameZh": "成衣的制造",
       "personsSeries": [
         {
           "year": 2000,
@@ -891,6 +896,7 @@
     {
       "code": "ind_17",
       "name": "Manufacture of paper and paper products",
+      "nameZh": "纸及纸制品的制造",
       "personsSeries": [
         {
           "year": 2000,
@@ -1110,6 +1116,7 @@
     {
       "code": "ind_18",
       "name": "Printing and reproduction of recorded media",
+      "nameZh": "印刷及已储录资料媒体的复制",
       "personsSeries": [
         {
           "year": 2000,
@@ -1329,6 +1336,7 @@
     {
       "code": "ind_21",
       "name": "Manufacture of pharmaceuticals, medicinal chemical and botanical products",
+      "nameZh": "药品、医药化学剂和植物药材的制造",
       "personsSeries": [
         {
           "year": 2000,
@@ -1548,6 +1556,7 @@
     {
       "code": "ind_22",
       "name": "Manufacture of rubber and plastics products (except furniture, toys, sports goods and stationery)",
+      "nameZh": "橡胶及塑胶产品的制造（家具、玩具、体育用品及文具除外）",
       "personsSeries": [
         {
           "year": 2000,
@@ -1767,6 +1776,7 @@
     {
       "code": "ind_25",
       "name": "Manufacture of fabricated metal products (except machinery and equipment)",
+      "nameZh": "金属制品的制造（机械及设备除外）",
       "personsSeries": [
         {
           "year": 2000,
@@ -1986,6 +1996,7 @@
     {
       "code": "ind_26",
       "name": "Manufacture of computer, electronic and optical products",
+      "nameZh": "电脑、电子及光学产品的制造",
       "personsSeries": [
         {
           "year": 2000,
@@ -2205,6 +2216,7 @@
     {
       "code": "ind_27",
       "name": "Manufacture of electrical equipment",
+      "nameZh": "电器设备的制造",
       "personsSeries": [
         {
           "year": 2000,
@@ -2424,6 +2436,7 @@
     {
       "code": "ind_28",
       "name": "Manufacture of machinery and equipment n.e.c.",
+      "nameZh": "其他机械设备的制造",
       "personsSeries": [
         {
           "year": 2000,
@@ -2643,6 +2656,7 @@
     {
       "code": "ind_32",
       "name": "Other manufacturing",
+      "nameZh": "其他制造业",
       "personsSeries": [
         {
           "year": 2000,
@@ -2862,6 +2876,7 @@
     {
       "code": "ind_33",
       "name": "Repair and installation of machinery and equipment",
+      "nameZh": "机械及设备的维修及安装",
       "personsSeries": [
         {
           "year": 2000,
@@ -3081,6 +3096,7 @@
     {
       "code": "ind_35",
       "name": "Electricity and gas supply",
+      "nameZh": "电力及燃气供应",
       "personsSeries": [
         {
           "year": 2000,
@@ -3256,6 +3272,7 @@
     {
       "code": "ind_38",
       "name": "Waste collection, treatment and disposal; materials recovery",
+      "nameZh": "废弃物的收集、处理及处置；资源的回收处理",
       "personsSeries": [
         {
           "year": 2000,
@@ -3475,6 +3492,7 @@
     {
       "code": "ind_45",
       "name": "Import and export trade",
+      "nameZh": "进出口贸易",
       "personsSeries": [
         {
           "year": 2000,
@@ -3694,6 +3712,7 @@
     {
       "code": "ind_46",
       "name": "Wholesale",
+      "nameZh": "批发",
       "personsSeries": [
         {
           "year": 2000,
@@ -3913,6 +3932,7 @@
     {
       "code": "ind_47",
       "name": "Retail trade",
+      "nameZh": "零售业",
       "personsSeries": [
         {
           "year": 2000,
@@ -4132,6 +4152,7 @@
     {
       "code": "ind_49",
       "name": "Land transport",
+      "nameZh": "陆路运输",
       "personsSeries": [
         {
           "year": 2000,
@@ -4351,6 +4372,7 @@
     {
       "code": "ind_50",
       "name": "Water transport",
+      "nameZh": "水上运输",
       "personsSeries": [
         {
           "year": 2000,
@@ -4570,6 +4592,7 @@
     {
       "code": "ind_51",
       "name": "Air transport",
+      "nameZh": "航空运输",
       "personsSeries": [
         {
           "year": 2000,
@@ -4789,6 +4812,7 @@
     {
       "code": "ind_52",
       "name": "Warehousing and support services for transportation",
+      "nameZh": "货仓及运输辅助服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -5008,6 +5032,7 @@
     {
       "code": "ind_53",
       "name": "Postal and courier services",
+      "nameZh": "邮政及速递服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -5227,6 +5252,7 @@
     {
       "code": "ind_55",
       "name": "Accommodation services",
+      "nameZh": "住宿服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -5446,6 +5472,7 @@
     {
       "code": "ind_56",
       "name": "Food and beverage services",
+      "nameZh": "餐饮服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -5665,6 +5692,7 @@
     {
       "code": "ind_58",
       "name": "Publishing",
+      "nameZh": "出版",
       "personsSeries": [
         {
           "year": 2000,
@@ -5884,6 +5912,7 @@
     {
       "code": "ind_59",
       "name": "Motion picture, video and television programme production, sound recording and music publishing",
+      "nameZh": "电影、录像及电视节目制作、录音及音乐出版",
       "personsSeries": [
         {
           "year": 2000,
@@ -6103,6 +6132,7 @@
     {
       "code": "ind_60",
       "name": "Programming and broadcasting",
+      "nameZh": "节目编制及广播",
       "personsSeries": [
         {
           "year": 2000,
@@ -6314,6 +6344,7 @@
     {
       "code": "ind_61",
       "name": "Telecommunications",
+      "nameZh": "电讯",
       "personsSeries": [
         {
           "year": 2000,
@@ -6533,6 +6564,7 @@
     {
       "code": "ind_62",
       "name": "Information technology services",
+      "nameZh": "资讯科技服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -6752,6 +6784,7 @@
     {
       "code": "ind_63",
       "name": "Information services",
+      "nameZh": "资讯服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -6971,6 +7004,7 @@
     {
       "code": "ind_64",
       "name": "Financial services (except insurance and pension funding)",
+      "nameZh": "金融服务（保险及退休基金除外）",
       "personsSeries": [
         {
           "year": 2000,
@@ -7190,6 +7224,7 @@
     {
       "code": "ind_65",
       "name": "Insurance",
+      "nameZh": "保险",
       "personsSeries": [
         {
           "year": 2000,
@@ -7409,6 +7444,7 @@
     {
       "code": "ind_66",
       "name": "Services auxiliary to financial and insurance services",
+      "nameZh": "金融保险辅助服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -7628,6 +7664,7 @@
     {
       "code": "ind_68",
       "name": "Real estate",
+      "nameZh": "地产",
       "personsSeries": [
         {
           "year": 2000,
@@ -7847,6 +7884,7 @@
     {
       "code": "ind_69",
       "name": "Legal and accounting services",
+      "nameZh": "法律及会计服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -8066,6 +8104,7 @@
     {
       "code": "ind_70",
       "name": "Activities of head offices; management and management consultancy services",
+      "nameZh": "总办事处；管理及管理顾问服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -8285,6 +8324,7 @@
     {
       "code": "ind_71",
       "name": "Architecture and engineering services, technical testing and analysis",
+      "nameZh": "建筑及工程服务、技术测试及分析",
       "personsSeries": [
         {
           "year": 2000,
@@ -8504,6 +8544,7 @@
     {
       "code": "ind_72",
       "name": "Scientific research and development",
+      "nameZh": "科学研究及发展",
       "personsSeries": [
         {
           "year": 2000,
@@ -8723,6 +8764,7 @@
     {
       "code": "ind_74",
       "name": "Advertising and market research",
+      "nameZh": "广告及市场研究",
       "personsSeries": [
         {
           "year": 2000,
@@ -8942,6 +8984,7 @@
     {
       "code": "ind_75",
       "name": "Other professional, scientific and technical services",
+      "nameZh": "其他专业、科学及技术服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -9161,6 +9204,7 @@
     {
       "code": "ind_77",
       "name": "Rental and leasing services",
+      "nameZh": "租赁服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -9380,6 +9424,7 @@
     {
       "code": "ind_78",
       "name": "Employment services",
+      "nameZh": "就业服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -9599,6 +9644,7 @@
     {
       "code": "ind_79",
       "name": "Travel agency, reservation service and related services",
+      "nameZh": "旅行代理、代订服务及相关服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -9818,6 +9864,7 @@
     {
       "code": "ind_80",
       "name": "Security and investigation services",
+      "nameZh": "保安及侦查服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -10037,6 +10084,7 @@
     {
       "code": "ind_81",
       "name": "Services to buildings and landscape care",
+      "nameZh": "建筑物及园境护理服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -10256,6 +10304,7 @@
     {
       "code": "ind_82",
       "name": "Office administrative, office support and other business support services",
+      "nameZh": "办公室行政、办公室支援及其他商业支援服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -10475,6 +10524,7 @@
     {
       "code": "ind_85",
       "name": "Education",
+      "nameZh": "教育",
       "personsSeries": [
         {
           "year": 2000,
@@ -10694,6 +10744,7 @@
     {
       "code": "ind_86",
       "name": "Human health services",
+      "nameZh": "人类保健服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -10913,6 +10964,7 @@
     {
       "code": "ind_87",
       "name": "Residential care services",
+      "nameZh": "住宿护理服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -11132,6 +11184,7 @@
     {
       "code": "ind_88",
       "name": "Social work services",
+      "nameZh": "社会工作服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -11351,6 +11404,7 @@
     {
       "code": "ind_90",
       "name": "Creative and performing arts activities",
+      "nameZh": "创作及表演艺术活动",
       "personsSeries": [
         {
           "year": 2000,
@@ -11570,6 +11624,7 @@
     {
       "code": "ind_92",
       "name": "Amusement parks and theme parks",
+      "nameZh": "游乐园及主题乐园",
       "personsSeries": [
         {
           "year": 2000,
@@ -11717,6 +11772,7 @@
     {
       "code": "ind_93",
       "name": "Sports and other entertainment services",
+      "nameZh": "体育及其他娱乐服务",
       "personsSeries": [
         {
           "year": 2000,
@@ -11936,6 +11992,7 @@
     {
       "code": "ind_94",
       "name": "Activities of membership organisations",
+      "nameZh": "会员制组织活动",
       "personsSeries": [
         {
           "year": 2000,
@@ -12155,6 +12212,7 @@
     {
       "code": "ind_95",
       "name": "Repair of motor vehicles, motorcycles, computers, personal and household goods",
+      "nameZh": "汽车、电单车、电脑、个人及家庭用品修理",
       "personsSeries": [
         {
           "year": 2000,
@@ -12374,6 +12432,7 @@
     {
       "code": "ind_96",
       "name": "Other personal services",
+      "nameZh": "其他个人服务",
       "personsSeries": [
         {
           "year": 2000,

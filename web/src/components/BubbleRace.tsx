@@ -3,11 +3,14 @@ import ReactECharts from 'echarts-for-react';
 import type { EChartsOption } from 'echarts';
 import type { Industry } from '../types';
 import { TREND_COLORS } from '../types';
+import { STR, industryName, shortLabel, type Lang } from '../i18n';
 
 // Animated bubble "race": each year shows every industry as a bubble
 // (x = establishments, y = persons engaged, size = persons, color = trend).
 // The timeline plays across years so you watch industries swell and shrink.
-export default function BubbleRace({ industries }: { industries: Industry[] }) {
+export default function BubbleRace({ industries, lang }: { industries: Industry[]; lang: Lang }) {
+  const t = STR[lang];
+
   const option = useMemo<EChartsOption>(() => {
     const years = [
       ...new Set(industries.flatMap((i) => i.personsSeries.map((p) => p.year))),
@@ -22,18 +25,13 @@ export default function BubbleRace({ industries }: { industries: Industry[] }) {
         {
           type: 'scatter',
           data: industries.map((i) => ({
-            name: i.name,
+            name: industryName(i, lang),
             value: [valueAt(i, year, 'establishmentsSeries'), valueAt(i, year, 'personsSeries')],
             itemStyle: { color: TREND_COLORS[i.trend], opacity: 0.8 },
+            label: { show: true, formatter: shortLabel(i, lang) },
           })),
           symbolSize: (val: number[]) => 8 + 60 * Math.sqrt(val[1] / maxPersons),
-          label: {
-            show: true,
-            formatter: (p: any) => String(p.name).split(' ')[0],
-            position: 'top',
-            fontSize: 10,
-            color: '#555',
-          },
+          label: { show: true, position: 'top', fontSize: 10, color: '#555' },
         },
       ],
     }));
@@ -48,18 +46,18 @@ export default function BubbleRace({ industries }: { industries: Industry[] }) {
           label: { formatter: (s: any) => `${s}` },
           controlStyle: { showPlayBtn: true },
         },
-        title: { text: '香港各行业兴衰 (就业人数 × 机构数)', left: 'center', textStyle: { fontSize: 16 } },
+        title: { text: t.bubbleTitle, left: 'center', textStyle: { fontSize: 16 } },
         tooltip: {
           formatter: (p: any) =>
-            `${p.name}<br/>就业人数：${p.value[1].toLocaleString()}<br/>机构数：${p.value[0].toLocaleString()}`,
+            `${p.name}<br/>${t.tipPersons}：${p.value[1].toLocaleString()}<br/>${t.tipEst}：${p.value[0].toLocaleString()}`,
         },
-        grid: { left: 70, right: 40, top: 60, bottom: 60 },
-        xAxis: { type: 'value', name: '机构数', scale: true },
-        yAxis: { type: 'value', name: '就业人数', scale: true },
+        grid: { left: 16, right: 40, top: 60, bottom: 60, containLabel: true },
+        xAxis: { type: 'value', name: t.bubbleX, scale: true },
+        yAxis: { type: 'value', name: t.bubbleY, scale: true },
       },
       options,
     } as unknown as EChartsOption;
-  }, [industries]);
+  }, [industries, lang, t]);
 
   return <ReactECharts option={option} style={{ height: 520 }} notMerge />;
 }

@@ -2,37 +2,43 @@ import { useMemo } from 'react';
 import ReactECharts from 'echarts-for-react';
 import type { EChartsOption } from 'echarts';
 import type { Industry } from '../types';
-import { TREND_LABELS } from '../types';
+import { STR, industryName, trendLabel, type Lang } from '../i18n';
 
 // Dual-line detail for one industry: persons engaged + number of establishments
 // over the full period.
-export default function IndustryDetail({ industry }: { industry: Industry }) {
+export default function IndustryDetail({ industry, lang }: { industry: Industry; lang: Lang }) {
+  const t = STR[lang];
+
   const option = useMemo<EChartsOption>(
     () => ({
       title: {
-        text: industry.name,
-        subtext: `${TREND_LABELS[industry.trend]} · 就业 CAGR ${(industry.personsCAGR * 100).toFixed(1)}% · 机构 CAGR ${(industry.establishmentsCAGR * 100).toFixed(1)}%`,
+        text: industryName(industry, lang),
+        subtext: t.detailSubtext(
+          trendLabel(industry.trend, lang),
+          industry.personsCAGR,
+          industry.establishmentsCAGR,
+        ),
         left: 'center',
         textStyle: { fontSize: 16 },
       },
       tooltip: { trigger: 'axis' },
-      legend: { data: ['就业人数', '机构数'], bottom: 0 },
-      grid: { left: 70, right: 70, top: 80, bottom: 50 },
+      legend: { data: [t.tipPersons, t.tipEst], bottom: 0 },
+      grid: { left: 16, right: 16, top: 80, bottom: 50, containLabel: true },
       xAxis: { type: 'category', data: industry.personsSeries.map((p) => p.year) },
       yAxis: [
-        { type: 'value', name: '就业人数', position: 'left' },
-        { type: 'value', name: '机构数', position: 'right' },
+        { type: 'value', name: t.tipPersons, position: 'left' },
+        { type: 'value', name: t.tipEst, position: 'right' },
       ],
       series: [
         {
-          name: '就业人数',
+          name: t.tipPersons,
           type: 'line',
           smooth: true,
           data: industry.personsSeries.map((p) => p.value),
           itemStyle: { color: '#e4572e' },
         },
         {
-          name: '机构数',
+          name: t.tipEst,
           type: 'line',
           smooth: true,
           yAxisIndex: 1,
@@ -41,7 +47,7 @@ export default function IndustryDetail({ industry }: { industry: Industry }) {
         },
       ],
     }),
-    [industry],
+    [industry, lang, t],
   );
 
   return <ReactECharts option={option} style={{ height: 380 }} notMerge />;

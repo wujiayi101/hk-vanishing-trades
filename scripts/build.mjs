@@ -8,30 +8,37 @@ import { align } from './lib/hsic.mjs';
 import { cagr, classify, SHRINKING_TRENDS } from './lib/cagr.mjs';
 import { SOURCES, COLUMNS, THRESHOLDS, PATHS } from './config.mjs';
 
-function latestRaw(id) {
+// Latest raw file for an id with a given suffix (e.g. '.en.json'), or null.
+function latestRaw(id, suffix) {
   const files = readdirSync(PATHS.rawDir)
-    .filter((f) => f.startsWith(`${id}-`) && (f.endsWith('.csv') || f.endsWith('.json')))
+    .filter((f) => f.startsWith(`${id}-`) && f.endsWith(suffix))
     .sort();
-  if (files.length === 0) {
-    throw new Error(`No raw data for "${id}" in ${PATHS.rawDir}. Run: npm run fetch (or fetch:fixture).`);
-  }
-  return join(PATHS.rawDir, files[files.length - 1]);
+  return files.length ? join(PATHS.rawDir, files[files.length - 1]) : null;
 }
 
-// Load a raw file into normalized rows: { year, code, name, persons, establishments }.
-function loadRows(file) {
-  if (file.endsWith('.json')) return parseCenstatd(file);
-  return readCsv(file).map((row) => ({
+const src = SOURCES[0];
+const enFile = latestRaw(src.id, '.en.json');
+const csvFile = latestRaw(src.id, '.csv');
+
+// Primary data rows (English names): prefer the real JSON, fall back to fixture CSV.
+let rows;
+if (enFile) {
+  rows = parseCenstatd(enFile);
+} else if (csvFile) {
+  rows = readCsv(csvFile).map((row) => ({
     year: Number(row[COLUMNS.year]),
     code: row[COLUMNS.code],
     name: row[COLUMNS.name],
     persons: Number(row[COLUMNS.persons]),
     establishments: Number(row[COLUMNS.establishments]),
   }));
+} else {
+  throw new Error(`No raw data for "${src.id}" in ${PATHS.rawDir}. Run: npm run fetch (or fetch:fixture).`);
 }
 
-const src = SOURCES[0];
-const rows = loadRows(latestRaw(src.id));
+// Chinese names keyed by industry code (from the lang=sc dump), if available.
+const zhFile = latestRaw(src.id, '.zh.json');
+const zhName = new Map(zhFile ? parseCenstatd(zhFile).map((r) => [r.code, r.name]) : []);
 
 // Aggregate into per-canonical-code series.
 const byCode = new Map();
@@ -96,6 +103,7 @@ for (const entry of byCode.values()) {
   industries.push({
     code: entry.code,
     name: entry.name,
+    nameZh: zhName.get(entry.code) || entry.name,
     personsSeries,
     establishmentsSeries,
     personsCAGR: Number(personsCAGR.toFixed(4)),
@@ -119,6 +127,7 @@ const growing = industries
 const out = {
   generatedAt: (process.env.FETCH_DATE || new Date().toISOString().slice(0, 10)),
   source: src.label,
+  sourceZh: src.labelZh || src.label,
   yearRange: [minYear, maxYear],
   thresholds: THRESHOLDS,
   industries,

@@ -8,6 +8,7 @@ export interface Point {
 export interface Industry {
   code: string;
   name: string;
+  nameZh: string;
   personsSeries: Point[];
   establishmentsSeries: Point[];
   personsCAGR: number;
@@ -25,6 +26,7 @@ export interface Excluded {
 export interface TrendsData {
   generatedAt: string;
   source: string;
+  sourceZh: string;
   yearRange: [number, number];
   thresholds: {
     MIN_ABS_PERSONS: number;
@@ -43,11 +45,4 @@ export const TREND_COLORS: Record<Trend, string> = {
   shrinking_slow: '#f3a712',
   growing: '#2a9d8f',
   stable: '#8d99ae',
-};
-
-export const TREND_LABELS: Record<Trend, string> = {
-  shrinking_fast: '急速萎缩',
-  shrinking_slow: '缓慢萎缩',
-  growing: '正在增长',
-  stable: '大致平稳',
 };
