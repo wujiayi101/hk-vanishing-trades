@@ -1,71 +1,70 @@
 # hk-vanishing-trades
 
-「哪些行业在香港正在消失？」—— 用香港统计处（C&SD，data.gov.hk）公开数据，量化哪些行业的就业人数与机构数正在同步萎缩，并用交互图表讲成一个数据故事。
+> **🔗 Live: https://hk-vanishing-trades.pages.dev**
 
-## 它怎么判断「消失」
+"Which industries are disappearing in Hong Kong?" — using Census & Statistics Department (C&SD, via data.gov.hk) open data to quantify which industries are shrinking on both employment and establishment counts, told as an interactive data story.
 
-对每个行业，取 ~20 年的**就业人数**与**机构数**时间序列：
+## How it decides "disappearing"
 
-- 算各自的 **CAGR**（复合年增长率）。
-- **双指标同步下降**才算「萎缩」；据降幅分为 🔴 急速 / 🟡 缓慢。
-- 就业峰值低于阈值（默认 3000 人）的行业**不入榜**，避免小基数噪音（透明记录在 `excluded`）。
-- **HSIC 行业分类跨版本对齐**（`scripts/lib/hsic.mjs`）—— 这是本项目最大的数据准确性风险点，不对齐会让行业「凭空消失/出现」。
+For each industry, it takes ~20-year time series of **employment** and **number of establishments**:
 
-## 结构
+- Computes the **CAGR** (compound annual growth rate) of each.
+- Counts as "shrinking" only when **both indicators decline together**; graded 🔴 rapid / 🟡 slow by the size of the decline.
+- Industries whose peak employment is below a threshold (default 3000) are **excluded** to avoid small-base noise (transparently recorded in `excluded`).
+- **HSIC industry classifications are aligned across versions** (`scripts/lib/hsic.mjs`) — the single biggest data-accuracy risk; without alignment, industries appear to "vanish/appear" out of nowhere.
+
+## Structure
 
 ```
-scripts/        纯 Node 数据管线 (ESM)
-  config.mjs      数据源 URL / 阈值
-  fetch.mjs       下载 CSV → data/raw/（--fixture 用本地样例）
-  build.mjs       对齐 + 算 CAGR + 分级 → industry_trends.json
+scripts/        pure Node data pipeline (ESM)
+  config.mjs      data source URLs / thresholds
+  fetch.mjs       download CSV → data/raw/ (--fixture uses local samples)
+  build.mjs       align + compute CAGR + grade → industry_trends.json
   lib/            csv / cagr / hsic
-data/           原始 CSV + 生成的 JSON（用 Git 当数据库，无需数据库服务）
-web/            Vite + React + TS + ECharts 前端
-.github/        每月自动刷新数据的 workflow
+data/           raw CSV + generated JSON (Git as the database, no DB server)
+web/            Vite + React + TS + ECharts frontend
+.github/        workflow that refreshes data monthly
 ```
 
-## 本地开发
+## Develop
 
 ```bash
-npm install              # 根：数据管线依赖
-npm run gen:fixture      # 生成离线样例数据
+npm install              # root: data-pipeline deps
+npm run gen:fixture      # generate offline sample data
 npm run data             # fetch:fixture + build → industry_trends.json
-npm run test:cagr        # CAGR / 分级 单元测试
+npm run test:cagr        # CAGR / grading unit tests
 
 cd web && npm install
-npm run dev              # 本地预览前端
+npm run dev              # local frontend preview
 ```
 
-前端运行时 `fetch('/industry_trends.json')`，所以更新数据**无需改前端代码**。
+The frontend `fetch('/industry_trends.json')` at runtime, so refreshing data needs **no frontend code change**.
 
-## 数据源
+## Data source
 
-真实数据来自 **C&SD 表 215-16008**（按行业划分的机构单位数目及就业人数，JSON API，2000 年至今全序列）：
+Real data comes from **C&SD table 215-16008** (number of establishments and persons engaged by industry; JSON API, full series from 2000):
 
 ```
 https://www.censtatd.gov.hk/api/get.php?id=215-16008&lang=en&full_series=1
 ```
 
-- `scripts/lib/censtatd.mjs` 解析：取全港总数（DC=''）、年度（freq='Y'）、叶级行业（`ind_NN`，剔除会重复计数的 section 聚合如 `ind_B`/`ind_G`）。
-- `sv`：`PE`=就业人数、`EST`=机构数；`figure` 为空表示被抑制（当作缺失）。
-- 离线/CI 仍可用 `npm run gen:fixture` 的合成 CSV（`scripts/fetch.mjs --fixture`）。
+- `scripts/lib/censtatd.mjs` parses it: territory-wide totals (DC=''), annual (freq='Y'), leaf-level industries (`ind_NN`, dropping double-counting section aggregates like `ind_B` / `ind_G`).
+- `sv`: `PE` = persons engaged, `EST` = establishments; an empty `figure` means suppressed (treated as missing).
+- Offline / CI can still use the synthetic CSV from `npm run gen:fixture` (`scripts/fetch.mjs --fixture`).
 
-原始 28MB API 响应不入库（`data/raw/` 已 gitignore），只提交处理后的 `industry_trends.json`。
+The raw 28 MB API response is not committed (`data/raw/` is gitignored); only the processed `industry_trends.json` is.
 
-## 部署（Cloudflare Pages，GitHub Actions 自动部署）
+## Deploy (Cloudflare Pages, auto via GitHub Actions)
 
-`.github/workflows/deploy.yml` 在每次 push 到 `main` 时构建并部署到 Cloudflare Pages。
-需要在 GitHub 仓库 **Settings → Secrets and variables → Actions** 添加两个 secret：
+`.github/workflows/deploy.yml` builds and deploys to Cloudflare Pages on every push to `main`. Add two repo Secrets under **Settings → Secrets and variables → Actions**:
 
-- `CLOUDFLARE_API_TOKEN` —— Cloudflare 创建，权限含 *Account → Cloudflare Pages → Edit*
-- `CLOUDFLARE_ACCOUNT_ID` —— Cloudflare 控制台右侧 Account ID
+- `CLOUDFLARE_API_TOKEN` — created in Cloudflare with *Account → Cloudflare Pages → Edit* permission
+- `CLOUDFLARE_ACCOUNT_ID` — Account ID from the Cloudflare dashboard
 
-部署用 `wrangler pages deploy web/dist --project-name=hk-vanishing-trades`。
-首次若提示项目不存在，在 Cloudflare 控制台建一个同名 Pages 项目（或用 wrangler 首次创建）即可。
+Deploy uses `wrangler pages deploy web/dist --project-name=hk-vanishing-trades`. If the project doesn't exist on first run, create a same-named Pages project in the Cloudflare dashboard (or let wrangler create it).
 
-> 也可改用 Cloudflare 控制台的 Git 集成（Build command `npm run build`、输出 `web/dist`）；二选一即可。
+> Alternatively use the Cloudflare dashboard's Git integration (build command `npm run build`, output `web/dist`) — either approach works.
 
-## 数据更新
+## Data updates
 
-C&SD 数据季度~年度更新，结论变化极慢，因此**不需要实时抓取**。
-`.github/workflows/update-data.yml` 每月 1 号自动 fetch+build，**数据有变化才提交**。
+C&SD data updates quarterly–annually and the conclusions change very slowly, so **no real-time fetching is needed**. `.github/workflows/update-data.yml` runs fetch+build on the 1st of each month and **commits only when the data changed**.
