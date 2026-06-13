@@ -25,7 +25,10 @@ export default function DeclineRanking({
       codes
         .map((c) => industries.find((i) => i.code === c))
         .filter((i): i is Industry => Boolean(i))
-        .sort((a, b) => b.personsCAGR - a.personsCAGR),
+        // ECharts renders data[0] at the bottom, so sorting ascending by
+        // magnitude puts the biggest change on top (steepest decline for the
+        // shrinking chart, fastest growth for the growing chart) — top = high.
+        .sort((a, b) => Math.abs(a.personsCAGR) - Math.abs(b.personsCAGR)),
     [industries, codes],
   );
 
