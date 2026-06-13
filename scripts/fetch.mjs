@@ -10,9 +10,8 @@ const stamp = (process.env.FETCH_DATE || new Date().toISOString().slice(0, 10)).
 mkdirSync(PATHS.rawDir, { recursive: true });
 
 async function downloadOne(src) {
-  const dest = join(PATHS.rawDir, `${src.id}-${stamp}.csv`);
-
   if (useFixture) {
+    const dest = join(PATHS.rawDir, `${src.id}-${stamp}.csv`);
     if (!existsSync(PATHS.fixture)) {
       throw new Error(`Fixture not found at ${PATHS.fixture}. Run: npm run gen:fixture`);
     }
@@ -28,12 +27,26 @@ async function downloadOne(src) {
     );
   }
 
+  const isJson = src.format === 'censtatd-json';
+  const dest = join(PATHS.rawDir, `${src.id}-${stamp}.${isJson ? 'json' : 'csv'}`);
   const res = await fetch(src.url);
   if (!res.ok) throw new Error(`Fetch failed ${res.status} ${res.statusText} for ${src.url}`);
   const text = await res.text();
-  if (!text.trim() || !text.includes(',')) {
+
+  if (isJson) {
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch {
+      throw new Error(`Downloaded content for ${src.id} is not valid JSON`);
+    }
+    if (!Array.isArray(parsed.dataSet) || parsed.dataSet.length === 0) {
+      throw new Error(`C&SD response for ${src.id} has no dataSet records`);
+    }
+  } else if (!text.trim() || !text.includes(',')) {
     throw new Error(`Downloaded content for ${src.id} does not look like CSV`);
   }
+
   writeFileSync(dest, text, 'utf8');
   console.log(`[download] ${src.url} -> ${dest} (${text.length} bytes)`);
 }

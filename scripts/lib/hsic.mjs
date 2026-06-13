@@ -30,15 +30,19 @@ const REMAP = {
   // 'C13a': 'C13', 'C13b': 'C13',
 };
 
-// Align one normalized record. Returns { code, name, aligned } where
-// aligned=false means we could not map it to a canonical category.
+// Align one normalized record. Returns { code, name, aligned }.
+// The real C&SD table (215-16008) already publishes one consistent HSIC
+// classification across its full back-cast series, so its divisions pass
+// through as aligned. REMAP/CANONICAL remain the hook for any future source
+// that mixes classification versions (and for the offline fixture codes).
 export function align(record) {
   const raw = String(record.code || '').trim();
   const canonical = REMAP[raw] || raw;
-  const aligned = Object.prototype.hasOwnProperty.call(CANONICAL, canonical);
-  return {
-    code: canonical,
-    name: aligned ? CANONICAL[canonical] : record.name || raw,
-    aligned,
-  };
+  if (Object.prototype.hasOwnProperty.call(CANONICAL, canonical)) {
+    return { code: canonical, name: CANONICAL[canonical], aligned: true };
+  }
+  if (canonical) {
+    return { code: canonical, name: record.name || raw, aligned: true };
+  }
+  return { code: canonical, name: raw, aligned: false };
 }

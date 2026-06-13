@@ -3,34 +3,40 @@
 import { readdirSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { readCsv } from './lib/csv.mjs';
+import { parseCenstatd } from './lib/censtatd.mjs';
 import { align } from './lib/hsic.mjs';
 import { cagr, classify, SHRINKING_TRENDS } from './lib/cagr.mjs';
 import { SOURCES, COLUMNS, THRESHOLDS, PATHS } from './config.mjs';
 
 function latestRaw(id) {
   const files = readdirSync(PATHS.rawDir)
-    .filter((f) => f.startsWith(`${id}-`) && f.endsWith('.csv'))
+    .filter((f) => f.startsWith(`${id}-`) && (f.endsWith('.csv') || f.endsWith('.json')))
     .sort();
   if (files.length === 0) {
-    throw new Error(`No raw CSV for "${id}" in ${PATHS.rawDir}. Run: npm run fetch:fixture`);
+    throw new Error(`No raw data for "${id}" in ${PATHS.rawDir}. Run: npm run fetch (or fetch:fixture).`);
   }
   return join(PATHS.rawDir, files[files.length - 1]);
 }
 
-const src = SOURCES[0];
-const rows = readCsv(latestRaw(src.id));
-
-// Aggregate into per-canonical-code series.
-const byCode = new Map();
-const unaligned = new Map();
-for (const row of rows) {
-  const rec = {
+// Load a raw file into normalized rows: { year, code, name, persons, establishments }.
+function loadRows(file) {
+  if (file.endsWith('.json')) return parseCenstatd(file);
+  return readCsv(file).map((row) => ({
     year: Number(row[COLUMNS.year]),
     code: row[COLUMNS.code],
     name: row[COLUMNS.name],
     persons: Number(row[COLUMNS.persons]),
     establishments: Number(row[COLUMNS.establishments]),
-  };
+  }));
+}
+
+const src = SOURCES[0];
+const rows = loadRows(latestRaw(src.id));
+
+// Aggregate into per-canonical-code series.
+const byCode = new Map();
+const unaligned = new Map();
+for (const rec of rows) {
   const a = align(rec);
   if (!a.aligned) {
     unaligned.set(a.code, (unaligned.get(a.code) || 0) + 1);
@@ -40,9 +46,13 @@ for (const row of rows) {
     byCode.set(a.code, { code: a.code, name: a.name, persons: new Map(), establishments: new Map() });
   }
   const entry = byCode.get(a.code);
-  // Same canonical code may aggregate multiple source rows in the same year.
-  entry.persons.set(rec.year, (entry.persons.get(rec.year) || 0) + rec.persons);
-  entry.establishments.set(rec.year, (entry.establishments.get(rec.year) || 0) + rec.establishments);
+  // Only record present values; suppressed cells (null) leave a gap in the series.
+  if (Number.isFinite(rec.persons)) {
+    entry.persons.set(rec.year, (entry.persons.get(rec.year) || 0) + rec.persons);
+  }
+  if (Number.isFinite(rec.establishments)) {
+    entry.establishments.set(rec.year, (entry.establishments.get(rec.year) || 0) + rec.establishments);
+  }
 }
 
 const toSeries = (m) =>

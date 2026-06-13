@@ -23,9 +23,8 @@ jobs:
         run: npm ci
 
       - name: Fetch + build data
-        # Switch to `npm run fetch` once SOURCES[].url is configured in scripts/config.mjs.
         run: |
-          npm run fetch:fixture
+          npm run fetch
           npm run build:data
 
       - name: Commit if data changed
@@ -35,7 +34,7 @@ jobs:
           if git diff --quiet -- data/industry_trends.json web/public/industry_trends.json; then
             echo "No data changes."
           else
-            git add data/industry_trends.json web/public/industry_trends.json data/raw
+            git add data/industry_trends.json web/public/industry_trends.json
             git commit -m "chore(data): monthly refresh"
             git push
           fi

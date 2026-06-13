@@ -5,3 +5,7 @@ web/dist/
 .DS_Store
 .env
 .env.local
+
+# Raw API dumps are large (~28MB) and re-fetchable; only the processed JSON is committed.
+data/raw/*
+!data/raw/.gitkeep

@@ -38,21 +38,32 @@ npm run dev              # 本地预览前端
 
 前端运行时 `fetch('/industry_trends.json')`，所以更新数据**无需改前端代码**。
 
-## 接入真实数据
+## 数据源
 
-1. 在 data.gov.hk / censtatd.gov.hk 找到「按行业划分的机构单位数目及就业人数」时间序列 CSV 下载链接。
-2. 填进 `scripts/config.mjs` 的 `SOURCES[].url`。
-3. 按真实列名调整 `COLUMNS`，并在 `lib/hsic.mjs` 补齐 HSIC 版本映射。
-4. `npm run fetch && npm run build:data`，并把 workflow 里的 `fetch:fixture` 换成 `fetch`。
+真实数据来自 **C&SD 表 215-16008**（按行业划分的机构单位数目及就业人数，JSON API，2000 年至今全序列）：
 
-## 部署（Cloudflare Pages，免费、零服务器）
+```
+https://www.censtatd.gov.hk/api/get.php?id=215-16008&lang=en&full_series=1
+```
 
-连接此 GitHub 仓库，设置：
+- `scripts/lib/censtatd.mjs` 解析：取全港总数（DC=''）、年度（freq='Y'）、叶级行业（`ind_NN`，剔除会重复计数的 section 聚合如 `ind_B`/`ind_G`）。
+- `sv`：`PE`=就业人数、`EST`=机构数；`figure` 为空表示被抑制（当作缺失）。
+- 离线/CI 仍可用 `npm run gen:fixture` 的合成 CSV（`scripts/fetch.mjs --fixture`）。
 
-- **Build command:** `npm run build`
-- **Build output directory:** `web/dist`
+原始 28MB API 响应不入库（`data/raw/` 已 gitignore），只提交处理后的 `industry_trends.json`。
 
-之后每次 `git push`（含每月自动刷新数据的提交）自动重新部署。
+## 部署（Cloudflare Pages，GitHub Actions 自动部署）
+
+`.github/workflows/deploy.yml` 在每次 push 到 `main` 时构建并部署到 Cloudflare Pages。
+需要在 GitHub 仓库 **Settings → Secrets and variables → Actions** 添加两个 secret：
+
+- `CLOUDFLARE_API_TOKEN` —— Cloudflare 创建，权限含 *Account → Cloudflare Pages → Edit*
+- `CLOUDFLARE_ACCOUNT_ID` —— Cloudflare 控制台右侧 Account ID
+
+部署用 `wrangler pages deploy web/dist --project-name=hk-vanishing-trades`。
+首次若提示项目不存在，在 Cloudflare 控制台建一个同名 Pages 项目（或用 wrangler 首次创建）即可。
+
+> 也可改用 Cloudflare 控制台的 Git 集成（Build command `npm run build`、输出 `web/dist`）；二选一即可。
 
 ## 数据更新
 

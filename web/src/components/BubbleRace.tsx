@@ -9,7 +9,9 @@ import { TREND_COLORS } from '../types';
 // The timeline plays across years so you watch industries swell and shrink.
 export default function BubbleRace({ industries }: { industries: Industry[] }) {
   const option = useMemo<EChartsOption>(() => {
-    const years = industries[0]?.personsSeries.map((p) => p.year) ?? [];
+    const years = [
+      ...new Set(industries.flatMap((i) => i.personsSeries.map((p) => p.year))),
+    ].sort((a, b) => a - b);
     const valueAt = (i: Industry, year: number, key: 'personsSeries' | 'establishmentsSeries') =>
       i[key].find((p) => p.year === year)?.value ?? 0;
 

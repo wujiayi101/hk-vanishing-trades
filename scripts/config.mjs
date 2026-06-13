@@ -8,14 +8,16 @@
 export const SOURCES = [
   {
     id: 'persons-establishments-by-industry',
-    // TODO: replace with the confirmed C&SD CSV download URL.
-    url: null,
-    label: 'Number of establishments and persons engaged by industry (HSIC)',
+    // C&SD Table 215-16008: Number of establishments and persons engaged
+    // (other than the Civil Service) by industry division & District Council.
+    // JSON API, full back-cast series 2000-present. We use HK-wide totals (DC='').
+    url: 'https://www.censtatd.gov.hk/api/get.php?id=215-16008&lang=en&full_series=1',
+    label: 'C&SD Table 215-16008: Establishments & persons engaged by industry',
+    format: 'censtatd-json',
   },
 ];
 
-// Expected normalized CSV columns (after any source-specific mapping):
-//   year, code, name, persons, establishments
+// Columns for the CSV fixture path (offline development).
 export const COLUMNS = {
   year: 'year',
   code: 'code',
