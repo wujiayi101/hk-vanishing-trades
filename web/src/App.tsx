@@ -16,6 +16,13 @@ export default function App() {
     document.documentElement.lang = lang === 'zh' ? 'zh-HK' : 'en';
   }, [lang, t.htmlTitle]);
 
+  // Close the detail popup on Escape.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setSelected(null);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   const toggle = (
     <div className="lang-toggle" role="group" aria-label="language">
       {LANGS.map((l) => (
@@ -48,8 +55,7 @@ export default function App() {
   const { data } = state;
   const [from, to] = data.yearRange;
   const shrinkCount = data.industries.filter((i) => i.trend.startsWith('shrinking')).length;
-  const selectedIndustry =
-    data.industries.find((i) => i.code === (selected ?? data.ranking.shrinking[0])) ?? null;
+  const selectedIndustry = data.industries.find((i) => i.code === selected) ?? null;
   const source = lang === 'zh' ? data.sourceZh : data.source;
 
   return (
@@ -77,12 +83,6 @@ export default function App() {
         <p className="hint">{t.hintDetail}</p>
       </section>
 
-      {selectedIndustry && (
-        <section className="card">
-          <IndustryDetail industry={selectedIndustry} lang={lang} />
-        </section>
-      )}
-
       {data.ranking.growing.length > 0 && (
         <section className="card">
           <DeclineRanking
@@ -99,6 +99,17 @@ export default function App() {
       <footer className="footer">
         <p className="muted">{t.footer(from, to, data.thresholds.MIN_ABS_PERSONS, data.excluded.length)}</p>
       </footer>
+
+      {selectedIndustry && (
+        <div className="modal-overlay" onClick={() => setSelected(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setSelected(null)} aria-label={t.close}>
+              ×
+            </button>
+            <IndustryDetail industry={selectedIndustry} lang={lang} />
+          </div>
+        </div>
+      )}
     </main>
   );
 }

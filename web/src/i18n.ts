@@ -25,6 +25,7 @@ type Strings = {
   footer: (from: number, to: number, min: number, excluded: number) => string;
   loading: string;
   error: (msg: string) => string;
+  close: string;
   trends: Record<Trend, string>;
 };
 
@@ -50,6 +51,7 @@ export const STR: Record<Lang, Strings> = {
       `方法：对每个行业的就业人数与机构数计算 ${from}–${to} 年复合年增长率（CAGR），双指标同步下降才计为「萎缩」；就业人数峰值低于 ${min.toLocaleString()} 人的行业不入榜（已排除 ${excluded} 个）。`,
     loading: '载入数据中…',
     error: (msg) => `数据载入失败：${msg}`,
+    close: '关闭',
     trends: {
       shrinking_fast: '急速萎缩',
       shrinking_slow: '缓慢萎缩',
@@ -78,6 +80,7 @@ export const STR: Record<Lang, Strings> = {
       `Method: for each industry we compute the ${from}–${to} compound annual growth rate (CAGR) of both persons engaged and establishments; an industry counts as "shrinking" only when both decline. Industries whose peak employment is below ${min.toLocaleString()} are excluded (${excluded} dropped).`,
     loading: 'Loading…',
     error: (msg) => `Failed to load data: ${msg}`,
+    close: 'Close',
     trends: {
       shrinking_fast: 'Shrinking fast',
       shrinking_slow: 'Shrinking slowly',
